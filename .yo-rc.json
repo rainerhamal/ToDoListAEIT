@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "to-do-list-aeit",
+    "libraryId": "1b3156cc-daed-438e-89a7-b0c5773bbf41",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "ToDoListAEIT",
+    "solutionShortDescription": "ToDoListAEIT description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
