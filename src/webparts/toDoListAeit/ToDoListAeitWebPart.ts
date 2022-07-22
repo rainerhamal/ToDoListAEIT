@@ -5,7 +5,8 @@ import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField,
   PropertyPaneButton,
-  PropertyPaneButtonType
+  PropertyPaneButtonType,
+  PropertyPaneDropdown
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
@@ -19,6 +20,7 @@ import { SPHttpClient, SPHttpClientResponse } from '@microsoft/sp-http';
 export interface IToDoListAeitWebPartProps {
   description: string;
   titleList: string;
+  dropdownCategory:string;
 }
 
 export default class ToDoListAeitWebPart extends BaseClientSideWebPart<IToDoListAeitWebPartProps> {
@@ -40,12 +42,13 @@ export default class ToDoListAeitWebPart extends BaseClientSideWebPart<IToDoList
         // onUpdateListItem: this._onUpdateListItem,
         // onDeleteListItem: this._onDeleteListItem,
         onOpenPanel: this._onOpenPanel,
+        dropdownCategory: this.properties.dropdownCategory,
         titleList: this.properties.titleList,
         description: this.properties.description,
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
+        userDisplayName: this.context.pageContext.user.displayName,
       }
     );
 
@@ -57,16 +60,20 @@ export default class ToDoListAeitWebPart extends BaseClientSideWebPart<IToDoList
     
   }
 
-  private _onAddListItem = (event: React.MouseEvent<HTMLButtonElement>): void => {
-    event.preventDefault();
-    this._addListItem();
-      // .then(() => {
-      //   this._getListItems()
-      //     .then(response => {
-      //       this._countries = response;
-      //       this.render();
-      //     });
-      // });
+  // private _onAddListItem = (event: React.MouseEvent<HTMLButtonElement>): void => {
+  //   // event.preventDefault();
+  //   this._addListItem();
+  //     // .then(() => {
+  //     //   this._getListItems()
+  //     //     .then(response => {
+  //     //       this._countries = response;
+  //     //       this.render();
+  //     //     });
+  //     // });
+  // }
+  private _onAddListItem = (): void => {
+    this._addListItem()
+      
   }
 
   private _getItemEntityType(): Promise<string> {
@@ -86,8 +93,9 @@ export default class ToDoListAeitWebPart extends BaseClientSideWebPart<IToDoList
       .then(spEntityType => {
         const request: any = {};
         request.body = JSON.stringify({
-          Title: this.properties.description,
-          // Description: this.properties.description,
+          Title: this.properties.titleList,
+          Description: this.properties.description,
+          // Category: this.properties.dropdownCategory,
           '@odata.type': spEntityType
         });
   
@@ -147,11 +155,17 @@ export default class ToDoListAeitWebPart extends BaseClientSideWebPart<IToDoList
                 PropertyPaneTextField('titleList', {
                   label: "Title"
                 }),
+                PropertyPaneDropdown("dropdownCategory", {
+                  label:"Category",
+                  options:[{key:"HR", text:"HR"},
+                            {key:"Finance", text:"Finance"}]
+                }),
                 PropertyPaneButton("add", {
                   text: "Add Task",
                   buttonType: PropertyPaneButtonType.Primary,
                   onClick: this._onAddListItem.bind(this)
-                })
+                }),
+
               ]
             }
           ]
@@ -159,4 +173,5 @@ export default class ToDoListAeitWebPart extends BaseClientSideWebPart<IToDoList
       ]
     };
   }
+  
 }
